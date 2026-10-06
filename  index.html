@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IFL Vocabulary Trainer</title>
+<style>
+:root{--bg:#eaf0f2;--card:#fff;--tx:#14222b;--mu:#5d6b73;--ac:#0f6b6e;--ok:#1b7f4d;--no:#b3372c;--bd:#cdd8dc;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f171b;--card:#18242a;--tx:#e6eef1;--mu:#93a4ac;--ac:#4cc3c6;--ok:#4cc38a;--no:#f08073;--bd:#2c3d45}}
+:root[data-theme="dark"]{--bg:#0f171b;--card:#18242a;--tx:#e6eef1;--mu:#93a4ac;--ac:#4cc3c6;--ok:#4cc38a;--no:#f08073;--bd:#2c3d45}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
+h1{font:700 1.7rem/1.2 "Iowan Old Style",Georgia,serif;margin:0 0 4px}
+h2{font:700 1.3rem/1.3 "Iowan Old Style",Georgia,serif;margin:0 0 8px}
+.mu{color:var(--mu);margin:4px 0 14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{border:1px solid var(--bd);border-radius:20px;padding:4px 12px;cursor:pointer}
+label.f{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
+select{font:inherit;padding:6px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+button{font:inherit;cursor:pointer}
+.go{background:var(--ac);color:var(--bg);border:0;border-radius:6px;padding:10px 20px;font-weight:600;margin-top:12px}
+.alt{background:none;color:var(--ac);border:1px solid var(--ac);border-radius:6px;padding:9px 18px;margin-top:12px}
+button:focus-visible,select:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.top{display:flex;justify-content:space-between;color:var(--mu);font-size:.9rem}
+.bar{height:4px;background:var(--bd);margin:8px 0 16px}.bar i{display:block;height:100%;background:var(--ac)}
+.q{font:1.2rem/1.5 "Iowan Old Style",Georgia,serif;margin:0 0 14px}
+.ins{display:block;font:600 .9rem system-ui,sans-serif;color:var(--mu);margin-bottom:8px}
+u{text-decoration-thickness:2px;text-underline-offset:3px}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:6px;padding:11px 14px;margin:8px 0}
+.opt:hover:not(:disabled){border-color:var(--ac)}
+.opt.ok{border:2px solid var(--ok);background:color-mix(in srgb,var(--ok) 15%,var(--card))}
+.opt.no{border:2px solid var(--no);background:color-mix(in srgb,var(--no) 15%,var(--card))}
+.ex{margin:12px 0 0}
+.rv{border-top:1px solid var(--bd);padding-top:8px;margin-top:10px}.rv p{margin:4px 0}
+</style></head><body><main>
+<h1>IFL Vocabulary Trainer</h1>
+<p class="mu">Built to be harder than the real exam: tricky distractors, a timer, and an 80% target.</p>
+<div id="app"></div></main>
+<script>
+const D=[
+["Synonyms","Closest in meaning to <b>mitigate</b>:","alleviate","aggravate","postpone","overlook","Mitigate means to make something less severe."],
+["Synonyms","Closest in meaning to <b>ambiguous</b>:","unclear","obvious","hostile","temporary","Ambiguous means open to more than one interpretation."],
+["Synonyms","Closest in meaning to <b>meticulous</b>:","extremely careful","careless","talkative","curious","Meticulous means showing great attention to detail."],
+["Synonyms","Closest in meaning to <b>scarce</b>:","in short supply","plentiful","costly","ancient","Scarce means not enough is available."],
+["Synonyms","Closest in meaning to <b>prudent</b>:","sensible","reckless","jealous","fragile","Prudent means acting with care and good judgement."],
+["Synonyms","Closest in meaning to <b>refute</b>:","prove wrong","support","repeat","delay","Refute means to show a claim is false."],
+["Synonyms","Closest in meaning to <b>tenuous</b>:","weak","strong","dangerous","hidden","A tenuous link is a very weak one."],
+["Synonyms","Closest in meaning to <b>ubiquitous</b>:","found everywhere","very rare","extremely old","hard to see","Ubiquitous means seeming to be everywhere at once."],
+["Antonyms","Opposite of <b>frugal</b>:","wasteful","thrifty","careful","modest","Frugal means careful with money."],
+["Antonyms","Opposite of <b>transient</b>:","permanent","brief","fleeting","passing","Transient means lasting only a short time."],
+["Antonyms","Opposite of <b>verbose</b>:","succinct","wordy","talkative","fluent","Verbose means using too many words."],
+["Antonyms","Opposite of <b>candid</b>:","evasive","honest","frank","open","Candid means honest and direct."],
+["Antonyms","Opposite of <b>benign</b>:","harmful","mild","gentle","harmless","Benign means not harmful."],
+["Antonyms","Opposite of <b>scrupulous</b>:","unprincipled","careful","honest","thorough","Scrupulous means very careful about doing what is right."],
+["Context","Profits _____ sharply during the recession.","plummeted","soared","erupted","stretched","Plummet means fall suddenly and steeply."],
+["Context","Despite the evidence, he remained _____ in his belief.","steadfast","fragile","hostile","obsolete","Steadfast means firm and unwavering."],
+["Context","The government introduced strict measures to _____ the spread of the disease.","curb","boost","reward","afford","Curb means limit or restrain."],
+["Context","His remarks were deemed _____ and he was forced to apologise.","inappropriate","inevitable","invaluable","inexpensive","Inappropriate means not suitable for the situation."],
+["Context","The two companies decided to _____ their resources to cut costs.","pool","drain","scatter","forfeit","To pool resources is to combine them."],
+["Context","The witness gave a _____ account, leaving the jury confused.","contradictory","coherent","rigorous","courteous","Contradictory means its parts disagree with each other."],
+["Word forms","Her _____ to the project was crucial. (contribute)","contribution","contributor","contributory","contributing","A noun is needed after 'Her'; the thing given is the contribution."],
+["Word forms","The new law will have far-reaching _____. (implicate)","implications","implicates","implicit","implied","Implications are possible effects (plural noun)."],
+["Word forms","He was praised for his _____ during the crisis. (resource)","resourcefulness","resourceful","resourcing","resourced","A noun is needed after 'his'."],
+["Word forms","The _____ of the evidence was questioned. (reliable)","reliability","reliance","reliably","reliant","Reliability means being trustworthy."],
+["Collocations","The chairman will _____ the meeting until next week.","adjourn","disperse","abandon","relieve","Adjourn means break off until a later time."],
+["Collocations","The court _____ him responsible for the damage.","held","kept","took","had","'Hold someone responsible' is the fixed phrase."],
+["Collocations","These rules _____ a serious threat to small businesses.","pose","cause","make","do","'Pose a threat' is the standard collocation."],
+["Phrasal verbs","The match was _____ because of the storm.","called off","called out","called in","called up","Call off means cancel."],
+["Phrasal verbs","I can't _____ his rude behaviour any longer.","put up with","put up to","put off with","put down with","Put up with means tolerate."],
+["Phrasal verbs","The plan fell _____ due to lack of funding.","through","into","for","on","Fall through means fail to happen."],
+["Phrasal verbs","We need to _____ a solution before the deadline.","come up with","come across","come over","come round","Come up with means think of or produce."],
+["Idioms","<b>Bite the bullet</b> means:","face something unpleasant bravely","attack someone","waste time","speak rudely","It means to endure a difficult situation with courage."],
+["Idioms","<b>Once in a blue moon</b> means:","very rarely","every night","at midnight","unexpectedly often","Blue moons are rare, so it means almost never."],
+["Idioms","<b>A blessing in disguise</b> is something that:","seems bad but turns out good","looks good but is bad","is kept hidden","is religious","It is unwelcome at first but beneficial later."],
+["Confusables","The new policy will _____ all employees.","affect","effect","infect","reflect","Affect is the verb; effect is usually a noun."],
+["Confusables","He was _____ of cheating in the exam.","accused","blamed","charged","condemned","'Accused of' is the fixed pattern."],
+["Confusables","This car is very _____ to run.","economical","economic","economy","economist","Economical means saving money; economic relates to the economy."],
+["Confusables","His speech was so _____ that nobody left early.","compelling","compulsory","compelled","complying","Compelling means it holds your attention powerfully."],
+["Odd one out","Which word has the OPPOSITE meaning to the other three?","meagre","abundant","plentiful","ample","Meagre means small in amount; the others mean a large amount."],
+["Underlined words","The detective found the suspect's story <u>hard to believe</u>.","implausible","inevitable","inexplicable","inconsequential","Implausible means not seeming reasonable or likely."],
+["Underlined words","The council decided to <u>put off</u> the construction of the bridge.","postpone","abandon","expedite","approve","Put off means delay until later."],
+["Underlined words","She <u>took after</u> her mother in both looks and temper.","resembled","admired","obeyed","followed","Take after means to resemble a parent or relative."],
+["Underlined words","The company's <u>sudden</u> collapse shocked investors.","abrupt","gradual","imminent","partial","Abrupt means sudden and unexpected."],
+["Underlined words","Heavy rain <u>brought about</u> the cancellation of the festival.","caused","followed","prevented","delayed","Bring about means cause to happen."],
+["Underlined words","The villagers lived in <u>extreme poverty</u>.","destitution","frugality","austerity","simplicity","Destitution means having no money or possessions at all."],
+["Underlined words","He was <u>reluctant</u> to share his plans.","unwilling","unable","eager","afraid","Reluctant means unwilling and hesitant."],
+["Underlined words","The teacher <u>praised</u> the pupils' efforts.","commended","commanded","condemned","consoled","Commend means praise formally."],
+["Underlined words","The documents were <u>kept secret</u> from the public.","concealed","conserved","contained","confined","Conceal means hide from view or knowledge."],
+["Underlined words","Scientists are <u>looking into</u> the cause of the fire.","investigating","inspecting","observing","reflecting","Look into means investigate; inspecting is only checking."],
+["Underlined words","The athlete <u>gave up</u> the race after his injury.","withdrew from","retreated from","resigned from","declined from","Withdraw from means to stop taking part."],
+["Underlined words","The new phone is <u>much better than</u> its predecessor.","far superior to","slightly preferable to","equal to","similar to","Far superior to means much better than."],
+["Underlined words","The speaker's <u>unclear</u> explanation confused the audience.","vague","brief","casual","rigid","Vague means not clear or precise."],
+["Underlined words","The committee <u>made up</u> an excuse for the delay.","fabricated","fulfilled","rectified","justified","Fabricate means invent something false."],
+["Underlined words","He <u>insisted</u> that the report was accurate.","maintained","suspected","admitted","hinted","Maintain means keep stating firmly that something is true."],
+["Underlined words","The two leaders <u>settled their differences</u> over dinner.","reconciled","deviated","diverged","dissented","Reconcile means to restore friendly relations."],
+["Underlined words","The old bridge is <u>in danger of</u> collapsing.","at risk of","capable of","suspected of","accused of","At risk of means likely to suffer something bad."],
+["Underlined words","She <u>coped with</u> the heavy workload.","managed","manipulated","manufactured","monitored","Cope with means deal successfully with a difficulty."],
+["Underlined words","The sales figures <u>stayed the same</u> throughout the year.","remained constant","remained volatile","remained negligible","remained substantial","Constant means not changing."],
+["Underlined words","He was <u>famous for</u> his generosity.","renowned for","notorious for","known to","blamed for","Renowned for means widely known for a good quality."]
+];
+const C=[...new Set(D.map(q=>q[0]))];
+var S={};
+const $=id=>document.getElementById(id);
+function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function best(){try{return +localStorage.getItem('iflbest')||0}catch(e){return 0}}
+function setBest(v){try{localStorage.setItem('iflbest',v)}catch(e){}}
+function home(){
+$('app').innerHTML=`<div class="card"><h2>Set up your practice</h2><p class="mu">${D.length} multiple-choice questions with 4 options each.</p>
+<div class="chips">${C.map(c=>`<label class="chip"><input type="checkbox" value="${c}" checked> ${c}</label>`).join('')}</div>
+<label class="f">Questions <select id="n"><option>10</option><option selected>20</option><option>30</option><option value="${D.length}">All</option></select></label>
+<label class="f">Time per question <select id="t"><option value="0">No timer</option><option value="30">30 seconds</option><option value="20" selected>20 seconds (hard)</option><option value="12">12 seconds (extreme)</option></select></label>
+<button class="go" onclick="start()">Start practice</button> <button class="alt" onclick="drill()">Underlined-word drill only</button><p class="mu">Best score: ${best()}%</p></div>`}
+function start(){const cs=[...document.querySelectorAll('.chip input:checked')].map(e=>e.value);const p=D.filter(q=>cs.includes(q[0]));if(!p.length)return;S={q:sh(p).slice(0,+$('n').value),i:0,s:0,m:[],t:+$('t').value};show()}
+function drill(){document.querySelectorAll('.chip input').forEach(x=>x.checked=x.value==='Underlined words');start()}
+function again(){S={q:sh(S.q.slice()),i:0,s:0,m:[],t:S.t};show()}
+function show(){clearInterval(S.h);if(S.i>=S.q.length)return end();const q=S.q[S.i];S.o=sh(q.slice(2,6));S.d=false;S.l=S.t;
+$('app').innerHTML=`<div class="card"><div class="top"><span>Question ${S.i+1} of ${S.q.length} (${q[0]})</span><span id="tm">${S.t?S.t+'s':''}</span></div><div class="bar"><i style="width:${S.i/S.q.length*100}%"></i></div><p class="q">${q[0]==='Underlined words'?'<span class="ins">Choose the word(s) closest in meaning to the underlined word(s).</span>':''}${q[1]}</p>${S.o.map((o,k)=>`<button class="opt" onclick="ans(${k})">${o}</button>`).join('')}<div id="fb"></div></div>`;
+if(S.t)S.h=setInterval(()=>{S.l--;$('tm').textContent=S.l+'s';if(S.l<=0)ans(-1)},1000)}
+function ans(k){if(S.d)return;S.d=true;clearInterval(S.h);const q=S.q[S.i],ok=k>=0&&S.o[k]===q[2];if(ok)S.s++;else S.m.push([q,k<0?'(no answer)':S.o[k]]);
+document.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(S.o[j]===q[2])b.classList.add('ok');else if(j===k)b.classList.add('no')});
+$('fb').innerHTML=`<p class="ex"><b>${ok?'Correct.':k<0?"Time's up.":'Not quite.'}</b> ${q[6]}</p><button class="go" onclick="S.i++;show()">${S.i+1<S.q.length?'Next question':'See results'}</button>`}
+function end(){const p=Math.round(S.s/S.q.length*100);if(p>best())setBest(p);
+$('app').innerHTML=`<div class="card"><h2>${S.s} of ${S.q.length} correct (${p}%)</h2><p>${p>=80?'You are above the 80% target.':p>=60?'Close. Aim for 80% before the exam.':'Review the misses below, then retry.'}</p><button class="go" onclick="again()">Retry these questions</button> <button class="alt" onclick="home()">New setup</button>${S.m.length?'<h2 style="margin-top:20px">Review your misses</h2>'+S.m.map(([q,c])=>`<div class="rv"><p>${q[1]}</p><p>You chose: <s>${c}</s><br>Correct: <b>${q[2]}</b></p><p class="mu">${q[6]}</p></div>`).join(''):''}</div>`}
+home();
+</script></body></html>
